@@ -1,0 +1,52 @@
+name:                benchmark-prac-haskell
+version:             0.1.0.0
+-- synopsis:
+-- description:
+homepage:            https://github.com/githubuser/benchmark-prac-haskell#readme
+license:             BSD3
+license-file:        LICENSE
+author:              Author name here
+maintainer:          example@example.com
+copyright:           2017 Author name here
+category:            Web
+build-type:          Simple
+extra-source-files:  README.md
+cabal-version:       >=1.10
+
+library
+  hs-source-dirs:      src
+  exposed-modules:     Data.String.Strip
+  build-depends:       base >= 4.7 && < 5
+  default-language:    Haskell2010
+
+executable benchmark-prac-haskell
+  hs-source-dirs:      app
+  main-is:             Main.hs
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  build-depends:       base
+                     , benchmark-prac-haskell
+  default-language:    Haskell2010
+
+test-suite benchmark-prac-haskell-test
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Spec.hs
+  build-depends:       base
+                     , benchmark-prac-haskell
+                     , hspec
+                     , QuickCheck
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+
+benchmark benchmark-prac-haskell-bench
+  type:           exitcode-stdio-1.0
+  hs-source-dirs: bench
+  main-is:        BenchMain.hs
+  -- other-modules:
+  build-depends:  base
+                , benchmark-prac-haskell
+                , criterion
+
+source-repository head
+  type:     git
+  location: https://github.com/githubuser/benchmark-prac-haskell
