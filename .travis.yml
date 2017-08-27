@@ -1,0 +1,49 @@
+# (from: https://raw.githubusercontent.com/commercialhaskell/stack/master/doc/travis-simple.yml)
+
+# This is the simple Travis configuration, which is intended for use
+# on applications which do not require cross-platform and
+# multiple-GHC-version support. For more information and other
+# options, see:
+#
+# https://docs.haskellstack.org/en/stable/travis_ci/
+#
+# Copy these contents into the root directory of your Github project in a file
+# named .travis.yml
+
+# Use new container infrastructure to enable caching
+sudo: false
+
+# Do not choose a language; we provide our own build tools.
+language: generic
+
+# Caching so the next build will be fast too.
+cache:
+  directories:
+  - $HOME/.stack
+
+# Ensure necessary system libraries are present
+addons:
+  apt:
+    packages:
+      - libgmp-dev
+
+before_install:
+# Download and unpack the stack executable
+- mkdir -p ~/.local/bin
+- export PATH=$HOME/.local/bin:$PATH
+- travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
+
+install:
+# Build dependencies
+- stack --no-terminal --install-ghc test --only-dependencies
+
+script:
+# Build the package, its tests, and its docs and run the tests
+- stack --no-terminal test --haddock --no-haddock-deps
+# Make a benchmark
+- stack bench
+
+notifications:
+  email: false
+  slack:
+    secure: "fvk0oyK3Dy+DgxCFizHv3Fs61IdAOy7cxH34AbSWKgAN6cB7Qd6jRJNqwnhA/MCIAS1Awz4ulLL+/PB2103f/wQErK+MPix1EXZcnGdRwHSXHPewqCuy0b1C7ju/IuxTMkDIWXMzLYIeJ1gs2x5V+QxMu7/xe1lvbIEEK0Ne5MWq5xN5/76v/v3bxmXGi8HwOjNfT0bZbVG+XL47Fn078nd+McppFe9AJBr3I6rw9PxB0rUNB4ygmohBN+rjFgxM6U7z+p2TR5NYrIQU0aCFmEbJJM++nJWLf6k67TJKTAXnJMyARb+xkNvnwyENqsnd4nraXfr5mz6GfeYwU6GrzbnErHW96xlzh7pO+JlOrnL8PCFpig/FfxDTqZpAO074YwlIFWPOkNF9xheTXxYhpl1ugJduj4F74sh+VEpLO4E9BdRdOO+4FEm8Jp/9fko0OHtO1e0Ii1Z7lMH10e4XArChd7mPCzwhnCPNNnFOm1wMH1i3xftzidEKD5eJIOlTkDVN9jKXwBoqydBvLmC3uvItBCpSfih3J9PLd0BRsLoc88nhV3KgxjMX4FMXRMJGYN7//B0/R6xZnKRIws8x7c/lug7izBXeKpZIQI98bOUAaEhdPtiUsN22TJ5drDGs/SB5Pjrm2nzruoYj6wl0IBXZy6OhJoyn30p6ot+VboU="
